@@ -18,6 +18,10 @@ export const _getCinemaCityMovies = async (): Promise<Movies> => {
     const cityMovies = await getCinemaCityMoviesByTheater(city as City);
     for (const movie of cityMovies) {
       const { Name, Dates } = movie;
+      // we don't want dubbed movies
+      if (Name.includes("מדובב")) {
+        continue;
+      }
       const showings: Showing[] = Dates.map((date) => ({
         company: "סינמה-סיטי",
         city: city as City,
@@ -44,6 +48,10 @@ export const _getMovielandMovies = async (): Promise<Movies> => {
   const movielandMovies = await getMovielandMovies();
   for (const movie of movielandMovies) {
     const { Name, Dates } = movie;
+    // we don't want dubbed movies
+    if (Name.includes("מדובב")) {
+      continue;
+    }
     const showings: Showing[] = Dates.map((date) => ({
       company: "מובילנד",
       city: "נתניה",
@@ -75,13 +83,8 @@ const loadMovies = async (): Promise<void> => {
 setInterval(loadMovies, 10 * 60 * 60 * 1000);
 
 export const getCache = async (): Promise<{ movies: Movies }> => {
-  console.log("getCache");
-
   if (cache.movies.size === 0) {
-    console.log("loading movies");
-
     await loadMovies();
-    console.log("loaded movies");
   }
   return cache;
 };
