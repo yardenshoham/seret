@@ -6,6 +6,13 @@ const cache: { movies: Movies } = {
   movies: new Map<string, Showing[]>(),
 };
 
+const normalizeMovieName = (name: string): string => {
+  return name
+    .replace(/[^א-ת0-9']+/g, " ")
+    .replace(/ אנגלית$/, "")
+    .trim();
+};
+
 export const _cinemaCityDateToShowingDate = (date: string): ShowingDate => {
   // date is in the format of "11/08/2023 21:40"
   const [day, month, year, hour, minute] = date.split(/\/|:| /).map(Number);
@@ -17,11 +24,12 @@ export const _getCinemaCityMovies = async (): Promise<Movies> => {
   for (const city of ["גלילות", "כפר-סבא", "נתניה"]) {
     const cityMovies = await getCinemaCityMoviesByTheater(city as City);
     for (const movie of cityMovies) {
-      const { Name, Dates } = movie;
+      let { Name, Dates } = movie;
       // we don't want dubbed movies
       if (Name.includes("מדובב")) {
         continue;
       }
+      Name = normalizeMovieName(Name);
       const showings: Showing[] = Dates.map((date) => ({
         company: "סינמה-סיטי",
         city: city as City,
@@ -47,7 +55,7 @@ export const _getMovielandMovies = async (): Promise<Movies> => {
   const result: Movies = new Map<string, Showing[]>();
   const movielandMovies = await getMovielandMovies();
   for (const movie of movielandMovies) {
-    const { Name, Dates } = movie;
+    let { Name, Dates } = movie;
     // we don't want dubbed movies
     if (Name.includes("מדובב")) {
       continue;
@@ -57,6 +65,7 @@ export const _getMovielandMovies = async (): Promise<Movies> => {
       city: "נתניה",
       date: _movielandDateToShowingDate(date.Date),
     }));
+    Name = normalizeMovieName(Name);
     if (result.has(Name)) {
       result.get(Name)!.push(...showings);
     } else {
