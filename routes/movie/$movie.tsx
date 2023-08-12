@@ -34,7 +34,15 @@ export default function Index() {
       <Link to="/">חזור לדף הבית</Link>
       {Array.from(showingsByDate.entries()).map(([date, s]) => (
         <div>
-          <h2>{date}</h2>
+          <h2>
+            <time dateTime={date}>
+              {Intl.DateTimeFormat("he-IL", {
+                weekday: "long",
+                month: "long",
+                day: "numeric",
+              }).format(new Date(date))}
+            </time>
+          </h2>
           {s
             ?.toSorted(
               (a, b) => movieDateToNumber(a.date) - movieDateToNumber(b.date),
