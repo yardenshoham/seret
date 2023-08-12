@@ -6,7 +6,7 @@ const cache = await getCache();
 export default function Index() {
   const movieNames = Array.from(cache.movies.keys());
   return (
-    <div className="screen index">
+    <div>
       <Head>
         <title>סרטים</title>
         <meta name="description" content="בחירת סרט" />
