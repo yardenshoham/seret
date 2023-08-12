@@ -16,15 +16,19 @@ export default function Index() {
         <meta name="description" content="בחירת סרט" />
       </Head>
       <Typography variant="h1" gutterBottom>בחר סרט</Typography>
-      <Grid container columns={4}>
+      <Box sx={{ flexGrow: 1 }} />
+      <Grid
+        container
+        spacing={{ xs: 2, md: 3 }}
+        columns={{ xs: 4, sm: 8, md: 12 }}
+      >
         {movieNames
           .filter(Boolean)
           .toSorted()
           .map((name) => (
-            <Grid xs={1}>
+            <Grid xs={2} sm={4} md={4} key={name}>
               <Typography variant="h5" gutterBottom>
                 <Link
-                  key={name}
                   role="button"
                   href={`/movie/${encodeURIComponent(name)}`}
                 >

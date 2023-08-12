@@ -4,6 +4,8 @@ import { Showing, ShowingDate } from "~/types.ts";
 import Link from "https://esm.sh/@mui/material@5.14.4/Link";
 import Grid from "https://esm.sh/@mui/material@5.14.4/Unstable_Grid2";
 import Typography from "https://esm.sh/@mui/material@5.14.4/Typography";
+import Box from "https://esm.sh/@mui/material@5.14.4/Box";
+import Divider from "https://esm.sh/@mui/material@5.14.4/Divider";
 
 const cache = await getCache();
 
@@ -62,33 +64,41 @@ export default function Index() {
         <meta name="description" content={movieName} />
       </Head>
       <Typography variant="h1" gutterBottom>{movieName}</Typography>
-      <Link href="/">חזור לדף הבית</Link>
-      <Grid container>
-        {Array.from(showingsByDate.entries()).map(([date, s]) => (
-          <Grid xs={2}>
-            <Typography variant="h5" gutterBottom>
-              <time dateTime={date}>
-                {Intl.DateTimeFormat("he-IL", {
-                  weekday: "long",
-                  month: "long",
-                  day: "numeric",
-                }).format(new Date(date))}
-              </time>
-            </Typography>
-            {s
-              ?.toSorted(
-                (a, b) => movieDateToNumber(a.date) - movieDateToNumber(b.date),
-              )
-              .map((showing) => (
-                <Typography variant="body1" gutterBottom>
-                  {showing.company} {showing.city} {showing.date.hour}:
-                  {showing.date.minute < 10 && "0"}
-                  {showing.date.minute}
-                </Typography>
-              ))}
-          </Grid>
-        ))}
-      </Grid>
+      <Box sx={{ flexGrow: 1 }}>
+        <Typography variant="h6" gutterBottom>
+          <Link href="/">חזור לדף הבית</Link>
+        </Typography>
+      </Box>
+      <Divider />
+      <Box sx={{ flexGrow: 1, marginTop: "1%" }}>
+        <Grid container spacing={5}>
+          {Array.from(showingsByDate.entries()).map(([date, s]) => (
+            <Grid>
+              <Typography variant="h5" gutterBottom>
+                <time dateTime={date}>
+                  {Intl.DateTimeFormat("he-IL", {
+                    weekday: "long",
+                    month: "long",
+                    day: "numeric",
+                  }).format(new Date(date))}
+                </time>
+              </Typography>
+              {s
+                ?.toSorted(
+                  (a, b) =>
+                    movieDateToNumber(a.date) - movieDateToNumber(b.date),
+                )
+                .map((showing) => (
+                  <Typography variant="body1" gutterBottom>
+                    {showing.company} {showing.city} {showing.date.hour}:
+                    {showing.date.minute < 10 && "0"}
+                    {showing.date.minute}
+                  </Typography>
+                ))}
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
     </div>
   );
 }
