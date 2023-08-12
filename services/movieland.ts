@@ -1,5 +1,8 @@
 import { MovielandMovie } from "~/types.ts";
 
+export const getMovielandImageLink = (pic: string) =>
+  `https://www.movieland-cinema.co.il/images/${pic}?w=236&h=350&mode=crop`;
+
 // netanya only
 export const getMovielandMovies = async (): Promise<MovielandMovie[]> => {
   const response = await fetch(

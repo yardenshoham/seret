@@ -8,7 +8,6 @@ import Box from "https://esm.sh/@mui/material@5.14.4/Box";
 const cache = await getCache();
 
 export default function Index() {
-  const movieNames = cache.movies.map((movie) => movie.name);
   return (
     <Box>
       <Head>
@@ -16,28 +15,33 @@ export default function Index() {
         <meta name="description" content="בחירת סרט" />
       </Head>
       <Typography variant="h1" gutterBottom>בחר סרט</Typography>
-      <Box sx={{ flexGrow: 1 }} />
-      <Grid
-        container
-        spacing={{ xs: 2, md: 3 }}
-        columns={{ xs: 4, sm: 8, md: 12 }}
-      >
-        {movieNames
-          .filter(Boolean)
-          .toSorted()
-          .map((name) => (
-            <Grid xs={2} sm={4} md={4} key={name}>
-              <Typography variant="h5" gutterBottom>
+      <Box sx={{ flexGrow: 1 }}>
+        <Grid
+          container
+          spacing={{ xs: 1, md: 3 }}
+          columns={{ xs: 4, sm: 8, md: 12 }}
+        >
+          {cache.movies
+            .toSorted()
+            .map((m) => (
+              <Grid md={2} sm={4} xs={4} key={m.name}>
                 <Link
                   role="button"
-                  href={`/movie/${encodeURIComponent(name)}`}
+                  href={`/movie/${encodeURIComponent(m.name)}`}
                 >
-                  {name}
+                  <Typography variant="h5" gutterBottom>
+                    {m.name}
+                  </Typography>
+                  <img
+                    src={m.img}
+                    alt={m.name}
+                    style={{ width: "236px", height: "350px" }}
+                  />
                 </Link>
-              </Typography>
-            </Grid>
-          ))}
-      </Grid>
+              </Grid>
+            ))}
+        </Grid>
+      </Box>
     </Box>
   );
 }

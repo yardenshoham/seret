@@ -1,6 +1,12 @@
-import { getCinemaCityMoviesByTheater } from "~/services/cinema_city.ts";
+import {
+  getCinemaCityImageLink,
+  getCinemaCityMoviesByTheater,
+} from "~/services/cinema_city.ts";
 import { City, Movie, Showing, ShowingDate } from "~/types.ts";
-import { getMovielandMovies } from "~/services/movieland.ts";
+import {
+  getMovielandImageLink,
+  getMovielandMovies,
+} from "~/services/movieland.ts";
 
 const cache: { movies: Movie[] } = {
   movies: [],
@@ -24,7 +30,7 @@ export const _getCinemaCityMovies = async (): Promise<Movie[]> => {
   for (const city of ["גלילות", "כפר-סבא", "נתניה"]) {
     const cityMovies = await getCinemaCityMoviesByTheater(city as City);
     for (const movie of cityMovies) {
-      let { Name, Dates } = movie;
+      let { Name, Dates, Pic } = movie;
       // we don't want dubbed movies
       if (Name.includes("מדובב")) {
         continue;
@@ -42,7 +48,7 @@ export const _getCinemaCityMovies = async (): Promise<Movie[]> => {
         result.push({
           name: Name,
           showings,
-          img: "",
+          img: getCinemaCityImageLink(Pic),
         });
       }
     }
@@ -60,7 +66,7 @@ export const _getMovielandMovies = async (): Promise<Movie[]> => {
   const result: Movie[] = [];
   const movielandMovies = await getMovielandMovies();
   for (const movie of movielandMovies) {
-    let { Name, Dates } = movie;
+    let { Name, Dates, Pic } = movie;
     // we don't want dubbed movies
     if (Name.includes("מדובב")) {
       continue;
@@ -78,7 +84,7 @@ export const _getMovielandMovies = async (): Promise<Movie[]> => {
       result.push({
         name: Name,
         showings,
-        img: "",
+        img: getMovielandImageLink(Pic),
       });
     }
   }
