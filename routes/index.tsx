@@ -16,7 +16,7 @@ export default function Index() {
         <meta name="description" content="בחירת סרט" />
       </Head>
       <Typography variant="h1" gutterBottom>בחר סרט</Typography>
-      <Grid container spacing={2} columns={4}>
+      <Grid container columns={4}>
         {movieNames
           .filter(Boolean)
           .toSorted()
