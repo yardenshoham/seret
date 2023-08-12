@@ -10,7 +10,7 @@ const movieDateToNumber = (date: ShowingDate) =>
     date.month - 1,
     date.day,
     date.hour,
-    date.minute
+    date.minute,
   ).getTime();
 export default function Index() {
   const movieName = decodeURIComponent(useRouter().params.movie);
@@ -18,7 +18,8 @@ export default function Index() {
   // group showings by date
   const showingsByDate = new Map<string, Showing[]>();
   showings?.forEach((showing) => {
-    const date = `${showing.date.year}-${showing.date.month}-${showing.date.day}`;
+    const date =
+      `${showing.date.year}-${showing.date.month}-${showing.date.day}`;
     const showingsForDate = showingsByDate.get(date) ?? [];
     showingsForDate.push(showing);
     showingsByDate.set(date, showingsForDate);
@@ -36,7 +37,7 @@ export default function Index() {
           <h2>{date}</h2>
           {s
             ?.toSorted(
-              (a, b) => movieDateToNumber(a.date) - movieDateToNumber(b.date)
+              (a, b) => movieDateToNumber(a.date) - movieDateToNumber(b.date),
             )
             .map((showing) => (
               <p>
