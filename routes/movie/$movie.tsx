@@ -43,7 +43,8 @@ export default function Index() {
     minute: parseInt(parts.minute ?? "0"),
   };
 
-  const showings = cache.movies.get(movieName);
+  const showings = cache.movies.find((movie) => movie.name === movieName)
+    ?.showings;
   // group showings by date
   const showingsByDate = new Map<string, Showing[]>();
   showings?.forEach((showing) => {

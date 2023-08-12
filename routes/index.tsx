@@ -8,7 +8,7 @@ import Box from "https://esm.sh/@mui/material@5.14.4/Box";
 const cache = await getCache();
 
 export default function Index() {
-  const movieNames = Array.from(cache.movies.keys());
+  const movieNames = cache.movies.map((movie) => movie.name);
   return (
     <Box>
       <Head>

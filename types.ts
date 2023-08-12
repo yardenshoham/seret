@@ -13,7 +13,11 @@ export type Showing = {
   city: City;
   date: ShowingDate;
 };
-export type Movies = Map<string, Showing[]>;
+export type Movie = {
+  name: string;
+  showings: Showing[];
+  img: string;
+};
 
 // cinema city
 export type CinemaCityDate = {

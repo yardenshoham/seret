@@ -1,9 +1,9 @@
 import { getCinemaCityMoviesByTheater } from "~/services/cinema_city.ts";
-import { City, Movies, Showing, ShowingDate } from "~/types.ts";
+import { City, Movie, Showing, ShowingDate } from "~/types.ts";
 import { getMovielandMovies } from "~/services/movieland.ts";
 
-const cache: { movies: Movies } = {
-  movies: new Map<string, Showing[]>(),
+const cache: { movies: Movie[] } = {
+  movies: [],
 };
 
 const normalizeMovieName = (name: string): string => {
@@ -19,8 +19,8 @@ export const _cinemaCityDateToShowingDate = (date: string): ShowingDate => {
   return { day, month, year, hour, minute };
 };
 
-export const _getCinemaCityMovies = async (): Promise<Movies> => {
-  const result: Movies = new Map<string, Showing[]>();
+export const _getCinemaCityMovies = async (): Promise<Movie[]> => {
+  const result: Movie[] = [];
   for (const city of ["גלילות", "כפר-סבא", "נתניה"]) {
     const cityMovies = await getCinemaCityMoviesByTheater(city as City);
     for (const movie of cityMovies) {
@@ -35,10 +35,15 @@ export const _getCinemaCityMovies = async (): Promise<Movies> => {
         city: city as City,
         date: _cinemaCityDateToShowingDate(date.Date),
       }));
-      if (result.has(Name)) {
-        result.get(Name)!.push(...showings);
+      const movieIndex = result.findIndex((movie) => movie.name === Name);
+      if (movieIndex !== -1) {
+        result[movieIndex].showings.push(...showings);
       } else {
-        result.set(Name, showings);
+        result.push({
+          name: Name,
+          showings,
+          img: "",
+        });
       }
     }
   }
@@ -51,8 +56,8 @@ export const _movielandDateToShowingDate = (date: string): ShowingDate => {
   return { day, month, year, hour, minute };
 };
 
-export const _getMovielandMovies = async (): Promise<Movies> => {
-  const result: Movies = new Map<string, Showing[]>();
+export const _getMovielandMovies = async (): Promise<Movie[]> => {
+  const result: Movie[] = [];
   const movielandMovies = await getMovielandMovies();
   for (const movie of movielandMovies) {
     let { Name, Dates } = movie;
@@ -66,10 +71,15 @@ export const _getMovielandMovies = async (): Promise<Movies> => {
       date: _movielandDateToShowingDate(date.Date),
     }));
     Name = normalizeMovieName(Name);
-    if (result.has(Name)) {
-      result.get(Name)!.push(...showings);
+    const movieIndex = result.findIndex((movie) => movie.name === Name);
+    if (movieIndex !== -1) {
+      result[movieIndex].showings.push(...showings);
     } else {
-      result.set(Name, showings);
+      result.push({
+        name: Name,
+        showings,
+        img: "",
+      });
     }
   }
   return result;
@@ -78,21 +88,22 @@ export const _getMovielandMovies = async (): Promise<Movies> => {
 const loadMovies = async (): Promise<void> => {
   const cinemaCityMovies = await _getCinemaCityMovies();
   const movielandMovies = await _getMovielandMovies();
-  for (const [movieName, showings] of cinemaCityMovies) {
-    if (movielandMovies.has(movieName)) {
-      movielandMovies.get(movieName)!.push(...showings);
+  for (const movie of movielandMovies) {
+    const movieIndex = cinemaCityMovies.findIndex((m) => m.name === movie.name);
+    if (movieIndex !== -1) {
+      cinemaCityMovies[movieIndex].showings.push(...movie.showings);
     } else {
-      movielandMovies.set(movieName, showings);
+      cinemaCityMovies.push(movie);
     }
   }
-  cache.movies = movielandMovies;
+  cache.movies = cinemaCityMovies;
 };
 
 // refresh movies 10 hours
 setInterval(loadMovies, 10 * 60 * 60 * 1000);
 
-export const getCache = async (): Promise<{ movies: Movies }> => {
-  if (cache.movies.size === 0) {
+export const getCache = async (): Promise<{ movies: Movie[] }> => {
+  if (cache.movies.length === 0) {
     await loadMovies();
   }
   return cache;
