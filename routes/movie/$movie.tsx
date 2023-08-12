@@ -10,7 +10,7 @@ const movieDateToNumber = (date: ShowingDate) =>
     date.month - 1,
     date.day,
     date.hour,
-    date.minute
+    date.minute,
   ).getTime();
 export default function Index() {
   const movieName = decodeURIComponent(useRouter().params.movie);
@@ -25,7 +25,7 @@ export default function Index() {
       <Link to="/">חזור לדף הבית</Link>
       {showings
         ?.toSorted(
-          (a, b) => movieDateToNumber(a.date) - movieDateToNumber(b.date)
+          (a, b) => movieDateToNumber(a.date) - movieDateToNumber(b.date),
         )
         .map((showing) => (
           <h2>
