@@ -1,5 +1,7 @@
-import { Head, Link } from "aleph/react";
+import { Head } from "aleph/react";
 import { getCache } from "~/services/movies.ts";
+import Link from "https://esm.sh/@mui/material@5.14.4/Link";
+import Grid from "https://esm.sh/@mui/material@5.14.4/Unstable_Grid2";
 
 const cache = await getCache();
 
@@ -12,17 +14,22 @@ export default function Index() {
         <meta name="description" content="בחירת סרט" />
       </Head>
       <h1>בחר סרט</h1>
-      {movieNames.toSorted().map((name) => (
-        <nav key={name}>
-          <Link
-            key={name}
-            role="button"
-            to={`/movie/${encodeURIComponent(name)}`}
-          >
-            {name}
-          </Link>
-        </nav>
-      ))}
+      <Grid container spacing={2} columns={4}>
+        {movieNames
+          .filter(Boolean)
+          .toSorted()
+          .map((name) => (
+            <Grid xs={1}>
+              <Link
+                key={name}
+                role="button"
+                href={`/movie/${encodeURIComponent(name)}`}
+              >
+                {name}
+              </Link>
+            </Grid>
+          ))}
+      </Grid>
     </div>
   );
 }
