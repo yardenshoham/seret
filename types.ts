@@ -13,7 +13,11 @@ export type Showing = {
   city: City;
   date: ShowingDate;
 };
-export type Movies = Map<string, Showing[]>;
+export type Movie = {
+  name: string;
+  showings: Showing[];
+  img: string;
+};
 
 // cinema city
 export type CinemaCityDate = {
@@ -22,6 +26,7 @@ export type CinemaCityDate = {
 export type CinemaCityMovie = {
   Name: string;
   Dates: CinemaCityDate[];
+  Pic: string;
 };
 
 // movieland
@@ -31,4 +36,5 @@ export type MovielandDate = {
 export type MovielandMovie = {
   Name: string;
   Dates: MovielandDate[];
+  Pic: string;
 };
