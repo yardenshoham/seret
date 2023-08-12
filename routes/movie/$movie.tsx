@@ -3,6 +3,7 @@ import { getCache } from "~/services/movies.ts";
 import { Showing, ShowingDate } from "~/types.ts";
 import Link from "https://esm.sh/@mui/material@5.14.4/Link";
 import Grid from "https://esm.sh/@mui/material@5.14.4/Unstable_Grid2";
+import Typography from "https://esm.sh/@mui/material@5.14.4/Typography";
 
 const cache = await getCache();
 
@@ -60,12 +61,12 @@ export default function Index() {
         <title>{movieName}</title>
         <meta name="description" content={movieName} />
       </Head>
-      <h1>{movieName}</h1>
+      <Typography variant="h1" gutterBottom>{movieName}</Typography>
       <Link href="/">חזור לדף הבית</Link>
       <Grid container>
         {Array.from(showingsByDate.entries()).map(([date, s]) => (
           <Grid xs={2}>
-            <h2>
+            <Typography variant="h5" gutterBottom>
               <time dateTime={date}>
                 {Intl.DateTimeFormat("he-IL", {
                   weekday: "long",
@@ -73,17 +74,17 @@ export default function Index() {
                   day: "numeric",
                 }).format(new Date(date))}
               </time>
-            </h2>
+            </Typography>
             {s
               ?.toSorted(
                 (a, b) => movieDateToNumber(a.date) - movieDateToNumber(b.date),
               )
               .map((showing) => (
-                <p>
+                <Typography variant="body1" gutterBottom>
                   {showing.company} {showing.city} {showing.date.hour}:
                   {showing.date.minute < 10 && "0"}
                   {showing.date.minute}
-                </p>
+                </Typography>
               ))}
           </Grid>
         ))}
