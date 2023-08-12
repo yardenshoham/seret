@@ -16,6 +16,30 @@ const movieDateToNumber = (date: ShowingDate) =>
   ).getTime();
 export default function Index() {
   const movieName = decodeURIComponent(useRouter().params.movie);
+
+  // get current date in Israel
+  const parts = new Intl.DateTimeFormat("en", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "numeric",
+    minute: "2-digit",
+    timeZone: "Asia/Jerusalem",
+    hour12: false,
+  })
+    .formatToParts(new Date())
+    .reduce((acc, part) => {
+      acc[part.type] = part.value;
+      return acc;
+    }, Object.create(null));
+  const currentDate: ShowingDate = {
+    year: parseInt(parts.year),
+    month: parseInt(parts.month),
+    day: parseInt(parts.day),
+    hour: parseInt(parts.hour ?? "0"),
+    minute: parseInt(parts.minute ?? "0"),
+  };
+
   const showings = cache.movies.get(movieName);
   // group showings by date
   const showingsByDate = new Map<string, Showing[]>();
@@ -23,6 +47,10 @@ export default function Index() {
     const date =
       `${showing.date.year}-${showing.date.month}-${showing.date.day}`;
     const showingsForDate = showingsByDate.get(date) ?? [];
+    // filter out dates that are in the past
+    if (movieDateToNumber(showing.date) < movieDateToNumber(currentDate)) {
+      return;
+    }
     showingsForDate.push(showing);
     showingsByDate.set(date, showingsForDate);
   });
