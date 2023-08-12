@@ -1,6 +1,8 @@
-import { Head, Link, useRouter } from "aleph/react";
+import { Head, useRouter } from "aleph/react";
 import { getCache } from "~/services/movies.ts";
 import { Showing, ShowingDate } from "~/types.ts";
+import Link from "https://esm.sh/@mui/material@5.14.4/Link";
+import Grid from "https://esm.sh/@mui/material@5.14.4/Unstable_Grid2";
 
 const cache = await getCache();
 
@@ -31,31 +33,33 @@ export default function Index() {
         <meta name="description" content={movieName} />
       </Head>
       <h1>{movieName}</h1>
-      <Link to="/">חזור לדף הבית</Link>
-      {Array.from(showingsByDate.entries()).map(([date, s]) => (
-        <div>
-          <h2>
-            <time dateTime={date}>
-              {Intl.DateTimeFormat("he-IL", {
-                weekday: "long",
-                month: "long",
-                day: "numeric",
-              }).format(new Date(date))}
-            </time>
-          </h2>
-          {s
-            ?.toSorted(
-              (a, b) => movieDateToNumber(a.date) - movieDateToNumber(b.date),
-            )
-            .map((showing) => (
-              <p>
-                {showing.company} {showing.city} {showing.date.hour}:
-                {showing.date.minute < 10 && "0"}
-                {showing.date.minute}
-              </p>
-            ))}
-        </div>
-      ))}
+      <Link href="/">חזור לדף הבית</Link>
+      <Grid container>
+        {Array.from(showingsByDate.entries()).map(([date, s]) => (
+          <Grid xs={2}>
+            <h2>
+              <time dateTime={date}>
+                {Intl.DateTimeFormat("he-IL", {
+                  weekday: "long",
+                  month: "long",
+                  day: "numeric",
+                }).format(new Date(date))}
+              </time>
+            </h2>
+            {s
+              ?.toSorted(
+                (a, b) => movieDateToNumber(a.date) - movieDateToNumber(b.date),
+              )
+              .map((showing) => (
+                <p>
+                  {showing.company} {showing.city} {showing.date.hour}:
+                  {showing.date.minute < 10 && "0"}
+                  {showing.date.minute}
+                </p>
+              ))}
+          </Grid>
+        ))}
+      </Grid>
     </div>
   );
 }
