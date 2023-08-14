@@ -28,13 +28,13 @@ export const _cinemaCityDateToShowingDate = (date: string): ShowingDate => {
 
 export const _getCinemaCityMovies = async (): Promise<Movie[]> => {
   const result: Movie[] = [];
-  for (const city of ["גלילות", "כפר-סבא", "נתניה"]) {
+  await Promise.all(["גלילות", "כפר-סבא", "נתניה"].map(async (city) => {
     const cityMovies = await getCinemaCityMoviesByTheater(city as City);
     for (const movie of cityMovies) {
       let { Name, Dates, Pic } = movie;
       // we don't want dubbed movies
       if (Name.includes("מדובב")) {
-        continue;
+        return;
       }
       Name = normalizeMovieName(Name);
       const showings: Showing[] = Dates.map((date) => ({
@@ -53,7 +53,7 @@ export const _getCinemaCityMovies = async (): Promise<Movie[]> => {
         });
       }
     }
-  }
+  }));
   return result;
 };
 
@@ -122,9 +122,12 @@ export const _getHotCinemaMovies = async (): Promise<Movie[]> => {
 };
 
 const loadMovies = async (): Promise<void> => {
-  const cinemaCityMovies = await _getCinemaCityMovies();
-  const movielandMovies = await _getMovielandMovies();
-  const hotCinemaMovies = await _getHotCinemaMovies();
+  const [cinemaCityMovies, movielandMovies, hotCinemaMovies] = await Promise
+    .all([
+      _getCinemaCityMovies(),
+      _getMovielandMovies(),
+      _getHotCinemaMovies(),
+    ]);
   for (const movie of movielandMovies) {
     const movieIndex = cinemaCityMovies.findIndex((m) => m.name === movie.name);
     if (movieIndex !== -1) {
