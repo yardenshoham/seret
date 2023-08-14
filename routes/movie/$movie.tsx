@@ -91,7 +91,9 @@ export default function Index() {
                 )
                 .map((showing) => (
                   <Typography variant="body1" gutterBottom>
-                    {showing.company} {showing.city} {showing.date.hour}:
+                    {showing.company} {showing.city}{" "}
+                    {showing.date.hour < 10 && "0"}
+                    {showing.date.hour}:
                     {showing.date.minute < 10 && "0"}
                     {showing.date.minute}
                   </Typography>
