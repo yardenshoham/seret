@@ -1,6 +1,8 @@
 {
-    "name": "@appName@",
-    "image": "hayd/debian-deno",
+    "name": "seret",
+    "build": { 
+        "dockerfile": "Dockerfile"
+    },
     "forwardPorts": [8000],
     "settings": {
         "terminal.integrated.shell.linux": "/bin/bash"
