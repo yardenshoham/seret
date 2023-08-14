@@ -1,13 +1,18 @@
 {
     "name": "seret",
     "build": { 
-        "dockerfile": "Dockerfile"
+        "dockerfile": "Dockerfile",
+        "args": { 
+            "VARIANT": "ubuntu-22.04" 
+        }
     },
     "forwardPorts": [8000],
-    "settings": {
-        "terminal.integrated.shell.linux": "/bin/bash"
-    },
     "extensions": [
         "denoland.vscode-deno"
-    ]
+    ],
+    "features": {
+        "kubectl-helm-minikube": "latest",
+        "terraform": "latest",
+        "github-cli": "latest"
+    }
 }
