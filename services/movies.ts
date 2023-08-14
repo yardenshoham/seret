@@ -7,6 +7,7 @@ import {
   getMovielandImageLink,
   getMovielandMovies,
 } from "~/services/movieland.ts";
+import { getHotCinemaMovies } from "~/services/hot_cinema.ts";
 
 const cache: { movies: Movie[] } = {
   movies: [],
@@ -37,7 +38,7 @@ export const _getCinemaCityMovies = async (): Promise<Movie[]> => {
       }
       Name = normalizeMovieName(Name);
       const showings: Showing[] = Dates.map((date) => ({
-        company: "סינמה-סיטי",
+        company: "סינמה סיטי",
         city: city as City,
         date: _cinemaCityDateToShowingDate(date.Date),
       }));
@@ -91,10 +92,48 @@ export const _getMovielandMovies = async (): Promise<Movie[]> => {
   return result;
 };
 
+export const _getHotCinemaMovies = async (): Promise<Movie[]> => {
+  const result: Movie[] = [];
+  const HotCinemaMovies = await getHotCinemaMovies();
+  for (const movie of HotCinemaMovies) {
+    const { MovieName, Dates } = movie;
+    // we don't want dubbed movies
+    if (MovieName.endsWith("עברית")) {
+      continue;
+    }
+    const showings: Showing[] = Dates.map((date) => ({
+      company: "הוט סינמה",
+      city: "כפר-סבא",
+      date: _cinemaCityDateToShowingDate(date.Date),
+    }));
+    const name = normalizeMovieName(MovieName);
+    const movieIndex = result.findIndex((movie) => movie.name === name);
+    if (movieIndex !== -1) {
+      result[movieIndex].showings.push(...showings);
+    } else {
+      result.push({
+        name: name,
+        showings,
+        img: "",
+      });
+    }
+  }
+  return result;
+};
+
 const loadMovies = async (): Promise<void> => {
   const cinemaCityMovies = await _getCinemaCityMovies();
   const movielandMovies = await _getMovielandMovies();
+  const hotCinemaMovies = await _getHotCinemaMovies();
   for (const movie of movielandMovies) {
+    const movieIndex = cinemaCityMovies.findIndex((m) => m.name === movie.name);
+    if (movieIndex !== -1) {
+      cinemaCityMovies[movieIndex].showings.push(...movie.showings);
+    } else {
+      cinemaCityMovies.push(movie);
+    }
+  }
+  for (const movie of hotCinemaMovies) {
     const movieIndex = cinemaCityMovies.findIndex((m) => m.name === movie.name);
     if (movieIndex !== -1) {
       cinemaCityMovies[movieIndex].showings.push(...movie.showings);
