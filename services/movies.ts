@@ -114,7 +114,6 @@ export const _getHotCinemaMovies = async (): Promise<Movie[]> => {
       result.push({
         name: name,
         showings,
-        img: "",
       });
     }
   }
@@ -144,7 +143,9 @@ const loadMovies = async (): Promise<void> => {
       cinemaCityMovies.push(movie);
     }
   }
-  cache.movies = cinemaCityMovies;
+  cache.movies = cinemaCityMovies.filter((movie) =>
+    movie.img && movie.name.length > 1
+  );
 };
 
 // refresh movies 10 hours

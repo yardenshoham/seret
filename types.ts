@@ -16,7 +16,7 @@ export type Showing = {
 export type Movie = {
   name: string;
   showings: Showing[];
-  img: string;
+  img?: string;
 };
 
 // cinema city
