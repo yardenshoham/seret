@@ -11,9 +11,9 @@
   "remoteUser": "vscode",
   // Use 'postCreateCommand' to run commands after the container is created.
   "postCreateCommand": "deno task dev",
-    "extensions": [
-        "denoland.vscode-deno"
-    ],
+  "extensions": [
+    "denoland.vscode-deno"
+  ],
   "features": {
     "kubectl-helm-minikube": "latest",
     "terraform": "latest",
