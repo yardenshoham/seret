@@ -34,7 +34,7 @@ export const _getCinemaCityMovies = async (): Promise<Movie[]> => {
       let { Name, Dates, Pic } = movie;
       // we don't want dubbed movies
       if (Name.includes("מדובב")) {
-        return;
+        continue;
       }
       Name = normalizeMovieName(Name);
       const showings: Showing[] = Dates.map((date) => ({
