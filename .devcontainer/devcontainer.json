@@ -14,5 +14,7 @@
   "extensions": [
     "denoland.vscode-deno"
   ],
-  "features": {}
+  "features": {
+    "github-cli": "latest"
+  }
 }
