@@ -14,9 +14,5 @@
   "extensions": [
     "denoland.vscode-deno"
   ],
-  "features": {
-    "kubectl-helm-minikube": "latest",
-    "terraform": "latest",
-    "github-cli": "latest"
-  }
+  "features": {}
 }
