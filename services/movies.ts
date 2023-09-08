@@ -26,6 +26,12 @@ export const _cinemaCityDateToShowingDate = (date: string): ShowingDate => {
   return { day, month, year, hour, minute };
 };
 
+export const _hotCinemaDateToShowingDate = (date: string): ShowingDate => {
+  // date is in the format of "2023-09-09T11:30:00"
+  const [year, month, day, hour, minute] = date.split(/-|T|:/).map(Number);
+  return { day, month, year, hour, minute };
+};
+
 export const _getCinemaCityMovies = async (): Promise<Movie[]> => {
   const result: Movie[] = [];
   await Promise.all(["גלילות", "כפר-סבא", "נתניה"].map(async (city) => {
@@ -104,7 +110,7 @@ export const _getHotCinemaMovies = async (): Promise<Movie[]> => {
     const showings: Showing[] = Dates.map((date) => ({
       company: "הוט סינמה",
       city: "כפר-סבא",
-      date: _cinemaCityDateToShowingDate(date.Date),
+      date: _hotCinemaDateToShowingDate(date.Date),
     }));
     const name = normalizeMovieName(MovieName);
     const movieIndex = result.findIndex((movie) => movie.name === name);
