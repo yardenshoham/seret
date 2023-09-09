@@ -73,7 +73,9 @@ export default function Index() {
       <Divider />
       <Box sx={{ flexGrow: 1, marginTop: "1%" }}>
         <Grid container spacing={5}>
-          {Array.from(showingsByDate.entries()).map(([date, s]) => (
+          {Array.from(showingsByDate.entries()).toSorted((a, b) =>
+            new Date(a[0]).getTime() - new Date(b[0]).getTime()
+          ).map(([date, s]) => (
             <Grid>
               <Typography variant="h5" gutterBottom>
                 <time dateTime={date}>
